@@ -1,5 +1,5 @@
-FROM nvidia/cuda:12.5.0-runtime-ubuntu22.04
-# FROM nvidia/cuda:12.5.0-devel-ubuntu22.04
+# FROM nvidia/cuda:12.5.0-runtime-ubuntu22.04
+FROM nvidia/cuda:12.5.0-devel-ubuntu22.04
 
 WORKDIR /root/
 
@@ -16,7 +16,7 @@ RUN chmod +x /root/conda.sh &&\
 ENV PATH=/opt/miniconda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 RUN apt-get update &&\
-    apt-get install -y libyaml-dev unzip ninja-build build-essential
+    apt-get install -y libyaml-dev unzip
 
 # AlphaPose
 RUN conda create -n alphapose python=3.7 -y
@@ -27,7 +27,9 @@ RUN conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c
 ## clone repo
 COPY ./AlphaPose-master.zip ./AlphaPose.zip
 RUN unzip ./AlphaPose.zip -d . &&\
+    mv AlphaPose-master/ AlphaPose/ &&\
     cd AlphaPose &&\
+    # pip install cython tqdm natsort detector
     pip install cython
 # python setup.py build develop
 
