@@ -26,9 +26,12 @@ SHELL ["conda", "run", "-n", "alphapose", "/bin/bash", "-c"]
 RUN conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
 ## clone repo
 COPY ./AlphaPose-master.zip ./AlphaPose.zip
+RUN apt-get install -y ninja-build
 RUN unzip ./AlphaPose.zip -d . &&\
     mv AlphaPose-master/ AlphaPose/ &&\
     cd AlphaPose &&\
+    export PATH=/usr/local/cuda/bin/:$PATH &&\
+    export LD_LIBRARY_PATH=/usr/local/cuda/lib64/:$LD_LIBRARY_PATH &&\
     # pip install cython tqdm natsort detector
     pip install cython
 # python setup.py build develop
