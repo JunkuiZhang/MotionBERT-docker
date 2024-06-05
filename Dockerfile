@@ -1,5 +1,5 @@
-# FROM Ubuntu:22.04
-FROM nvidia/cuda:12.5.0-devel-ubuntu22.04
+FROM nvidia/cuda:12.5.0-runtime-ubuntu22.04
+# FROM nvidia/cuda:12.5.0-devel-ubuntu22.04
 
 WORKDIR /root/
 
