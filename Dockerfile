@@ -16,17 +16,23 @@ RUN chmod +x /root/conda.sh &&\
 ENV PATH=/opt/miniconda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # AlphaPose
+RUN conda create -n alphapose python=3.7 -y
+# Make RUN commands use the new environment:
+SHELL ["conda", "run", "-n", "alphapose", "/bin/bash", "-c"]
+## install Pytorch
+RUN conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
+## clone repo
+RUN git clone https://github.com/MVIG-SJTU/AlphaPose.git &&\
+    cd AlphaPose &&\
+    python -m pip install cython &&\
+    apt-get install libyaml-dev &&\
+    python setup.py build develop
 
 # MotionBERT
-RUN conda create -n motionbert python=3.7 anaconda
-
+RUN conda create -n motionbert python=3.7 -y
 # Make RUN commands use the new environment:
 SHELL ["conda", "run", "-n", "motionbert", "/bin/bash", "-c"]
-# RUN /opt/miniconda/bin/conda create -n motionbert python=3.7 anaconda &&\
-#     /opt/miniconda/bin/conda activate motionbert &&\
-#     # Please install PyTorch according to your CUDA version.
-#     /opt/miniconda/bin/conda install pytorch torchvision torchaudio pytorch-cuda=12.0 -c pytorch -c nvidia &&\
-#     /opt/miniconda/bin/pip install -r requirements.txt
+## install pytorch
 RUN conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia &&\
     pip install -r requirements.txt
 
