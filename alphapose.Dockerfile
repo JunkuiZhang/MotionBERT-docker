@@ -1,7 +1,10 @@
-FROM nvidia/cuda:12.5.0-runtime-ubuntu22.04
+# FROM nvidia/cuda:12.5.0-devel-ubuntu22.04
+FROM ubuntu:22.04
 
 # install utils
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    build-essential \
+    ninja-build \
     ca-certificates \
     wget \
     unzip \
@@ -9,6 +12,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
     rm -rf /var/lib/apt/lists/*
 
 # set env
+# ENV PATH="/usr/local/cuda/bin/:/opt/conda/bin:${PATH}"
 ENV PATH="/opt/conda/bin:${PATH}"
 
 WORKDIR /root/
@@ -26,17 +30,34 @@ RUN conda init bash &&\
 
 # AlphaPose setup
 # see https://github.com/MVIG-SJTU/AlphaPose/blob/master/docs/INSTALL.md
+# https://github.com/MVIG-SJTU/AlphaPose/issues/1188
 RUN conda create -n alphapose python=3.7 -y
 # Make RUN commands use the new environment:
 SHELL ["conda", "run", "-n", "alphapose", "/bin/bash", "-c"]
 ## clone repo
 COPY ./AlphaPose-master.zip ./AlphaPose.zip
-RUN conda install pytorch torchvision torchaudio pytorch-cuda=11.3 -c pytorch -c nvidia
+# RUN conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
+RUN conda install -c "nvidia/label/cuda-11.3.1" cuda-toolkit -y
+RUN conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch
+RUN pip install -U pip setuptools && \
+    pip install cython==0.27.3 easydict halpecocotools munkres natsort opencv-python pyyaml scipy tensorboardx terminaltables timm==0.1.20 tqdm visdom jinja2 typeguard
+# fix gcc issue
+# see https://github.com/MVIG-SJTU/AlphaPose/issues/1157#issuecomment-1734703528
+RUN apt-get update && apt-get install -y --no-install-recommends gcc-9 g++-9 git && \
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 9 && \
+    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 9 && \
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 11 && \
+    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 11 && \
+    rm -rf /var/lib/apt/lists/* && \
+    update-alternatives --set gcc /usr/bin/gcc-9 &&\
+    update-alternatives --set g++ /usr/bin/g++-9
+
 RUN unzip ./AlphaPose.zip -d . && \
     mv AlphaPose-master/ AlphaPose/ && \
     rm -f AlphaPose.zip && \
     cd AlphaPose && \
-    python -m pip install cython && \
     python setup.py build develop
+
+WORKDIR /root/AlphaPose/
 
 ENTRYPOINT ["/bin/bash"]

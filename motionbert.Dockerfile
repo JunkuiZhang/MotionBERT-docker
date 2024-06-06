@@ -5,7 +5,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
     ca-certificates \
     wget \
     unzip \
-    libyaml-dev && \
+    git && \
     rm -rf /var/lib/apt/lists/*
 
 # set env
@@ -26,12 +26,12 @@ RUN conda init bash &&\
 
 # MotionBERT setup
 # see https://github.com/Walter0807/MotionBERT?tab=readme-ov-file#installation
-RUN conda create -n alphapose python=3.7 -y
+RUN conda create -n alphapose python=3.9 -y
 # Make RUN commands use the new environment:
 SHELL ["conda", "run", "-n", "alphapose", "/bin/bash", "-c"]
 ## clone repo
 COPY ./MotionBERT-main.zip ./MotionBERT.zip
-RUN conda install pytorch torchvision torchaudio pytorch-cuda=11.6 -c pytorch -c nvidia
+RUN conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
 RUN unzip ./MotionBERT.zip -d . && \
     mv MotionBERT-main/ MotionBERT/ && \
     rm -f MotionBERT.zip && \
