@@ -1,47 +1,40 @@
-# FROM nvidia/cuda:12.5.0-runtime-ubuntu22.04
-# FROM nvidia/cuda:12.5.0-devel-ubuntu22.04
+# https://github.com/pytorch/pytorch/blob/main/Dockerfile
 FROM ubuntu:22.04
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    ca-certificates \
+    wget \
+    unzip \
+    libyaml-dev && \
+    rm -rf /var/lib/apt/lists/*
+# RUN /usr/sbin/update-ccache-symlinks
+# RUN mkdir /opt/ccache && ccache --set-config=cache_dir=/opt/ccache
+ENV PATH="/opt/conda/bin:${PATH}"
 
 WORKDIR /root/
 
-# install cuda toolkit
-RUN apt-get update &&\
-    apt-get install -y wget build-essential &&\
-    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb &&\
-    dpkg -i cuda-keyring_1.1-1_all.deb &&\
-    apt-get update &&\
-    apt-get -y install cuda-toolkit-12-5
+RUN wget \
+    https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
+    mkdir /root/.conda && \
+    chmod +x ~/Miniconda3-latest-Linux-x86_64.sh && \
+    bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/conda && \
+    rm -f Miniconda3-latest-Linux-x86_64.sh
 
-# install miniconda
-COPY conda.sh conda.sh
-
-RUN chmod +x /root/conda.sh &&\
-    /root/conda.sh -b -p /opt/miniconda &&\
-    rm /root/conda.sh &&\
-    /opt/miniconda/bin/conda init bash &&\
-    /opt/miniconda/bin/pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-
-# set env
-ENV PATH=/usr/local/cuda/bin:/opt/miniconda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64
-
-RUN apt-get update &&\
-    apt-get install -y libyaml-dev unzip
+RUN conda init bash &&\
+    pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+# RUN conda init bash
 
 # AlphaPose
-RUN conda create -n alphapose python=3.7 -y
+RUN conda create -n alphapose python=3.8 -y
 # Make RUN commands use the new environment:
 SHELL ["conda", "run", "-n", "alphapose", "/bin/bash", "-c"]
-## install Pytorch
-RUN conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvidia
+## install Pytorch, see https://pytorch.org/
 ## clone repo
 COPY ./AlphaPose-master.zip ./AlphaPose.zip
-RUN apt-get install -y ninja-build
+RUN conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
+# RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 RUN unzip ./AlphaPose.zip -d . &&\
     mv AlphaPose-master/ AlphaPose/ &&\
     cd AlphaPose &&\
-    # pip install cython tqdm natsort detector
-    # pip install cython
     python -m pip install cython
 # python setup.py build develop
 
