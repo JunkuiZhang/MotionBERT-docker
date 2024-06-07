@@ -1,3 +1,19 @@
+## Prepare
+
+## AlphaPose
+
+To build images and run, you need to download the following:
+1. [halpe26_fast_res50_256x192.pth](https://drive.google.com/file/d/1S-ROA28de-1zvLv-hVfPFJ5tFBYOSITb/view)
+2. [yolov3-spp.weights](https://drive.usercontent.google.com/download?id=1D47msNOOiJKvPOXlnpyzdKA3k6E97NTC&export=download&authuser=0&confirm=t&uuid=b5c52340-197e-4d47-b874-b856e2ce469c&at=APZUnTVpX9wiVk-5-mfRVhmeZwS5%3A1717743467375)
+
+Put them in current work dir.
+
+## MotionBERT
+
+To build images and run, you need to download the following:
+1. Download [best_epoch.bin](https://onedrive.live.com/?authkey=%21ALuKCr9wihi87bI&id=A5438CD242871DF0%21190&cid=A5438CD242871DF0), then rename and move it to `motionbert-data/3dpose_best_epoch.bin`
+2. Download [best_epoch.bin](https://onedrive.live.com/?authkey=%21AKBg2yUINYw1CL0&id=A5438CD242871DF0%21185&cid=A5438CD242871DF0), then rename and move it to `motionbert-data/mesh_best_epoch.bin`
+
 ## How to build
 
 ```shell
