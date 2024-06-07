@@ -14,6 +14,11 @@ To build images and run, you need to download the following:
 1. Download [best_epoch.bin](https://onedrive.live.com/?authkey=%21ALuKCr9wihi87bI&id=A5438CD242871DF0%21190&cid=A5438CD242871DF0), then rename and move it to `motionbert-data/3dpose_best_epoch.bin`
 2. Download [best_epoch.bin](https://onedrive.live.com/?authkey=%21AKBg2yUINYw1CL0&id=A5438CD242871DF0%21185&cid=A5438CD242871DF0), then rename and move it to `motionbert-data/mesh_best_epoch.bin`
 
+## Result
+
+Your file tree should look like:
+![file tree view](https://github.com/junkuizhang/motionbert-docker/blob/main/file-tree.png?raw=true)
+
 ## How to build
 
 ```shell
