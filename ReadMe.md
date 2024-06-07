@@ -21,14 +21,13 @@ Your file tree should look like:
 ```shell
 .
 ├── AlphaPose
-│   ├── ...
+│   └── ...
 ├── AlphaPose-master.zip
 ├── MotionBERT
-│   ├── ...
+│   └── ...
 ├── MotionBERT-main.zip
 ├── ReadMe.md
 ├── alphapose.Dockerfile
-├── file-tree.png
 ├── halpe26_fast_res50_256x192.pth  <- Added
 ├── motionbert-data
 │   ├── 3dpose_best_epoch.bin       <- Added
