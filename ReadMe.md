@@ -17,7 +17,25 @@ To build images and run, you need to download the following:
 ## Result
 
 Your file tree should look like:
-![file tree view](https://github.com/junkuizhang/motionbert-docker/blob/main/file-tree.png?raw=true)
+
+```shell
+.
+├── AlphaPose
+│   ├── ...
+├── AlphaPose-master.zip
+├── MotionBERT
+│   ├── ...
+├── MotionBERT-main.zip
+├── ReadMe.md
+├── alphapose.Dockerfile
+├── file-tree.png
+├── halpe26_fast_res50_256x192.pth  <- Added
+├── motionbert-data
+│   ├── 3dpose_best_epoch.bin       <- Added
+│   └── mesh_best_epoch.bin         <- Added
+├── motionbert.Dockerfile
+└── yolov3-spp.weights              <- Added
+```
 
 ## How to build
 
