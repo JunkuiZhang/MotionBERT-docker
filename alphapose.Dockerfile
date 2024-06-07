@@ -50,10 +50,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends gcc-9 g++-9 git
     update-alternatives --set gcc /usr/bin/gcc-9 &&\
     update-alternatives --set g++ /usr/bin/g++-9
 
-RUN pip install easydict halpecocotools munkres natsort opencv-python pyyaml scipy tensorboardx terminaltables timm==0.1.20 tqdm visdom jinja2 typeguard
+RUN pip install easydict halpecocotools munkres natsort pyyaml scipy tensorboardx terminaltables timm==0.1.20 tqdm visdom jinja2 typeguard
 
-# fix "RPC failed; curl 16 Error in the HTTP2 framing layer"
-# RUN git config --global http.version HTTP/1.1
+RUN conda install -c conda-forge opencv
 
 RUN unzip ./AlphaPose.zip -d . && \
     mv AlphaPose-master/ AlphaPose/ && \
@@ -62,6 +61,14 @@ RUN unzip ./AlphaPose.zip -d . && \
     # fix "RPC failed; curl 16 Error in the HTTP2 framing layer"
     git config --global http.version HTTP/1.1
 
+# cv2 dep
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 -y && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /root/AlphaPose/
+# fix yolo
+RUN mkdir -p detector/yolo/data
+COPY halpe26_fast_res50_256x192.pth /root/AlphaPose/pretrained_models/halpe26_fast_res50_256x192.pth
+COPY yolov3-spp.weights /root/AlphaPose/detector/yolo/data/yolov3-spp.weights
 
 ENTRYPOINT ["/bin/bash"]

@@ -2,6 +2,7 @@ FROM ubuntu:22.04
 
 # install utils
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    build-essential \
     ca-certificates \
     wget \
     unzip \
@@ -26,16 +27,31 @@ RUN conda init bash &&\
 
 # MotionBERT setup
 # see https://github.com/Walter0807/MotionBERT?tab=readme-ov-file#installation
-RUN conda create -n alphapose python=3.9 -y
+RUN conda create -n motionbert python=3.8 -y
 # Make RUN commands use the new environment:
-SHELL ["conda", "run", "-n", "alphapose", "/bin/bash", "-c"]
+SHELL ["conda", "run", "-n", "motionbert", "/bin/bash", "-c"]
 ## clone repo
 COPY ./MotionBERT-main.zip ./MotionBERT.zip
 RUN conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
 RUN unzip ./MotionBERT.zip -d . && \
     mv MotionBERT-main/ MotionBERT/ && \
-    rm -f MotionBERT.zip && \
-    cd MotionBERT && \
-    pip install -r requirements.txt
+    rm -f MotionBERT.zip
+
+WORKDIR /root/MotionBERT/
+
+RUN pip install -r requirements.txt
+
+# cv2 dep
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 -y && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /root/MotionBERT/checkpoint/pose3d/FT_MB_lite_MB_ft_h36m_global_lite/ && \
+    mkdir -p checkpoint/mesh/FT_MB_release_MB_ft_pw3d/
+COPY motionbert-data/3dpose_best_epoch.bin /root/MotionBERT/checkpoint/pose3d/FT_MB_lite_MB_ft_h36m_global_lite/best_epoch.bin
+COPY motionbert-data/mesh_best_epoch.bin /root/MotionBERT/checkpoint/mesh/FT_MB_release_MB_ft_pw3d/best_epoch.bin
+
+# fix numpy
+RUN pip uninstall numpy -y && \
+    pip install numpy==1.23.1
 
 ENTRYPOINT ["/bin/bash"]
