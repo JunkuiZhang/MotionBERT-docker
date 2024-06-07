@@ -1,6 +1,6 @@
 ## Prepare
 
-## AlphaPose
+### AlphaPose
 
 To build images and run, you need to download the following:
 1. [halpe26_fast_res50_256x192.pth](https://drive.google.com/file/d/1S-ROA28de-1zvLv-hVfPFJ5tFBYOSITb/view)
@@ -8,13 +8,13 @@ To build images and run, you need to download the following:
 
 Put them in current work dir.
 
-## MotionBERT
+### MotionBERT
 
 To build images and run, you need to download the following:
 1. Download [best_epoch.bin](https://onedrive.live.com/?authkey=%21ALuKCr9wihi87bI&id=A5438CD242871DF0%21190&cid=A5438CD242871DF0), then rename and move it to `motionbert-data/3dpose_best_epoch.bin`
 2. Download [best_epoch.bin](https://onedrive.live.com/?authkey=%21AKBg2yUINYw1CL0&id=A5438CD242871DF0%21185&cid=A5438CD242871DF0), then rename and move it to `motionbert-data/mesh_best_epoch.bin`
 
-## Result
+### Result
 
 Your file tree should look like:
 
