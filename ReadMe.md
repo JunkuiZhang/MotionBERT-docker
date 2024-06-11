@@ -48,7 +48,7 @@ sudo docker build -f motionbert.Dockerfile -t zhangxiaobaichina/motionbert .
 ### AlphaPose
 
 ```shell
-sudo docker run -it -gpus=all --shm-size=16G --mount type=bind,source="$(pwd)"/AlphaPose,target=/root/AlphaPose/data --gpus all zhangxiaobaichina/alphapose
+sudo docker run -it --gpus all --shm-size=16G --mount type=bind,source="$(pwd)"/AlphaPose,target=/root/AlphaPose/data zhangxiaobaichina/alphapose
 # container
 conda activate alphapose
 python setup.py build develop
@@ -58,7 +58,7 @@ python scripts/demo_inference.py --cfg configs/halpe_26/resnet/256x192_res50_lr1
 ### MotionBERT
 
 ```shell
-sudo docker run -it --gpus=all --mount type=bind,source="$(pwd)"/MotionBERT,target=/root/MotionBERT/data --gpus all zhangxiaobaichina/motionbert
+sudo docker run -it --gpus=all --mount type=bind,source="$(pwd)"/MotionBERT,target=/root/MotionBERT/data zhangxiaobaichina/motionbert
 # container
 conda activate motionbert
 python infer_wild.py --vid_path data/test_video.mp4 --json_path data/alphapose-results.json --out_path data/
